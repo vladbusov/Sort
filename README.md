@@ -1,2 +1,2 @@
 # Сортировочки, чтобы знать их)
-![alt text](figures/img.png)
+![alt text](1286910103_vinegtet.jpg)
