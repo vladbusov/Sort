@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <time.h>
-#define TEST_ARR_SIZE 100000
+#define TEST_ARR_SIZE 40000
 
 
 using namespace std;
@@ -10,24 +10,24 @@ void swap(int *a, int* b);
 
 
 /*
-Худшее время	
+Худшее время
 O(n2)
-Лучшее время	
+Лучшее время
 O(n log2 n)
-Среднее время	
+Среднее время
 зависит от выбранных шагов
-Затраты памяти	
+Затраты памяти
 О(n) всего, O(1) дополнительно
 */
 
 void sort(int * g, int n){
 	for (int gap = n / 2; gap > 0; gap /= 2)
 		for (int i = gap; i < n; i++)
-			for (int j = i - gap; j >= 0; j-=gap)
+			for (int j = i - gap; j >= 0; j -= gap)
 				if (g[j + gap] < g[j]){
-					swap(    &(g[j + gap])    , &(g[j])   );
+					swap(&(g[j + gap]), &(g[j]));
 				}
-				/*else break*/;
+	/*else break*/;
 }
 
 void swap(int* a, int *b){
@@ -59,17 +59,42 @@ void quicksortl(int * Arr, int low, int hight){
 		quicksortl(Arr, p + 1, hight); // повторяем операцию для правой части
 	}
 }
+// Разбиение Разбиение Хоара (два индекса приближаются с разных сторон и возвращается средний)
+
+int partitionh(int * Arr, int low, int hight){
+	int pivot = Arr[low];
+	int i = low - 1;
+	int j = hight + 1;
+	while (true){
+		do {
+			i = i + 1;
+		} while (Arr[i] < pivot);
+		do {
+			j = j - 1;
+		} while (Arr[j] > pivot);
+		if (i >= j)
+			return j;
+		swap(&(Arr[i]), &(Arr[j]));
+	}
+}
+void quicksorth(int *Arr, int low, int hight){
+	if (low < hight){
+		int p = partitionh(Arr, low, hight);
+		quicksorth(Arr, low, p);
+		quicksorth(Arr, p + 1, hight);
+	}
+}
 /*
-Предназначение	
+Предназначение
 Алгоритм сортировки
-Худшее время	
+Худшее время
 O(n2)
-Лучшее время	
+Лучшее время
 O(n log n) (обычное разделение)
 или O(n) (разделение на 3 части)
-Среднее время	
+Среднее время
 O(n log n)
-Затраты памяти	
+Затраты памяти
 O(n) вспомогательных
 O(log n) вспомогательных (Седжвик 1978)
 */
@@ -86,7 +111,7 @@ int main(){
 
 	cout << "Сортировка Шелла:" << endl;
 	//for (int i = 0; i < TEST_ARR_SIZE; i++)
-		//cout << arr[i] << " ";
+	//cout << arr[i] << " ";
 	//cout << endl;
 
 	unsigned int start_time = clock();
@@ -94,15 +119,15 @@ int main(){
 	unsigned int end_time = clock();
 
 	//for (int i = 0; i < TEST_ARR_SIZE; i++)
-		//cout << arr[i]<< " ";
+	//cout << arr[i]<< " ";
 	//cout << endl;
 
 	unsigned int search_time = end_time - start_time;
 
-	cout<< "Время после сортировки Шелла: " << search_time << " мс" << endl;
+	cout << "Время после сортировки Шелла: " << search_time << " мс" << endl;
 
 
-	cout << "Быстрая сортировка с раззбиением Нико Ломуто::" << endl;
+	cout << "Быстрая сортировка с раззбиением Нико Ломуто:" << endl;
 	int arr2[TEST_ARR_SIZE];
 	for (int i = 0; i < TEST_ARR_SIZE; i++)
 		arr2[i] = rand();
@@ -111,21 +136,42 @@ int main(){
 
 
 	//for (int i = 0; i < TEST_ARR_SIZE; i++)
-		//cout << arr2[i] << " ";
+	//cout << arr2[i] << " ";
 	//cout << endl;
 
 	unsigned int start_time1 = clock();
-	quicksortl(arr2, 0, (TEST_ARR_SIZE-1) );
+	quicksortl(arr2, 0, (TEST_ARR_SIZE - 1));
 	unsigned int end_time1 = clock();
 
 
 	//for (int i = 0; i < TEST_ARR_SIZE; i++)
-		//cout << arr2[i] << " ";
+	//cout << arr2[i] << " ";
 	//cout << endl;
 
 	unsigned int search_time1 = end_time1 - start_time1;
 
-	cout <<"Время после быстрой сортировки: " << search_time1 << " мс" << endl;
+	cout << "Время после быстрой сортировки Ломуто: " << search_time1 << " мс" << endl;
+
+
+
+
+	cout << "Быстрая сортировка с раззбиением Хоара:" << endl;
+
+
+	int arr3[TEST_ARR_SIZE];
+	for (int i = 0; i < TEST_ARR_SIZE; i++)
+		arr3[i] = rand();
+
+	unsigned int start_time2 = clock();
+	quicksorth(arr3, 0, (TEST_ARR_SIZE - 1));
+	unsigned int end_time2 = clock();
+
+
+	unsigned int search_time2 = end_time2 - start_time2;
+
+	cout << "Время после быстрой сортировки Хоара: " << search_time2 << " мс" << endl;
+
+
 
 	system("PAUSE");
 	return 0;
